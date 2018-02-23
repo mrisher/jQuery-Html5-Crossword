@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import webapp2
+import re
 
 
 class MainPage(webapp2.RequestHandler):
@@ -21,6 +22,16 @@ class MainPage(webapp2.RequestHandler):
         self.response.write('Hello, World!')
 
 
+class Puzzle(webapp2.RequestHandler):
+    def get(self):
+        # strip anything non-numeric
+        puzzle = re.sub("[^0-9]", "", self.request.get("id"))
+        file = open("puzzles/{0}.html".format(puzzle), "r")
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.write(file.read())
+
+
 app = webapp2.WSGIApplication([
     ('/', MainPage),
+    ('/puzzle', Puzzle)
 ], debug=True)
